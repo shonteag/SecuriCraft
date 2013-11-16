@@ -32,14 +32,30 @@ public class BioPanel extends BlockContainer {
 	public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9){
 		TileEntitySecurityPanel tile = (TileEntitySecurityPanel) par1World.getBlockTileEntity(x, y, z);
 		if (player.getHeldItem() == null) {
-			if (player.getEntityName().equals(tile.getOwner())){
+			if (tile.checkUser(player.getEntityName().toString())){
 				player.addChatMessage("BioPanel: Access Granted");
 			} else {
-				player.addChatMessage("BioPanel: Access Denied");
+				if (tile.isOpen()) {
+					//add new user
+					//tile.addUser(player.getEntityName());
+					player.addChatMessage("BioPanel: You have been granted access");
+					EntityPlayer owner = par1World.getPlayerEntityByName(tile.getOwner());
+					owner.addChatMessage("BioPanel: User added: " + player.getEntityName());
+				} else {
+					player.addChatMessage("BioPanel: Access Denied");
+				}
 			}
 		} else if (player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 			if (player.getEntityName().equals(tile.getOwner())) {
 				//GUI. FUCK YEA!
+				
+				if (tile.isOpen()) {
+					tile.setOpen(false);
+					player.addChatMessage("BioPanel: Panel is no longer acception new users.");
+				} else {
+					tile.setOpen(true);
+					player.addChatMessage("BioPanel: Panel is awaiting new user...");
+				}
 				
 			}
 		}
