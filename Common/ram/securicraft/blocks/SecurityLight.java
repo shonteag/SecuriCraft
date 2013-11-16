@@ -40,7 +40,7 @@ public class SecurityLight extends BlockContainer {
 	@Override
     public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9){
 //		TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
-//		player.addChatMessage("Owner: " + tile.getOwner());
+//		player.addChatMessage("Owner: " + tile.getOwner() + ", " + tile.getOwnerID());
 		return false;
 	}
 	
@@ -52,6 +52,7 @@ public class SecurityLight extends BlockContainer {
 			if (player.getHeldItem() != null && player.getHeldItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 				this.dropBlockAsItem(par1World, x, y, z, par1World.getBlockMetadata(x, y, z), 0);
 				par1World.setBlockToAir(x, y, z);
+				par1World.removeBlockTileEntity(x, y, z);
 			}
 		}
 	}

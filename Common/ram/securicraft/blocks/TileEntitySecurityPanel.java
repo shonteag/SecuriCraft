@@ -8,7 +8,7 @@ public class TileEntitySecurityPanel extends TileEntity {
 	
 	@Override
 	public void writeToNBT(NBTTagCompound par1){
-		par1.setString("owner", owner);
+		par1.setString("owner", this.owner);
 		super.writeToNBT(par1);
 	}
 	@Override

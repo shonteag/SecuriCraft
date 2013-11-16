@@ -16,8 +16,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SecurityBlock extends BlockContainer {
 	
-	private boolean isOn = false;
-	
 	public SecurityBlock(int id, Material material) {
 		super(id, material);
 		this.setBlockUnbreakable();
@@ -30,10 +28,10 @@ public class SecurityBlock extends BlockContainer {
 		this.blockIcon = register.registerIcon(Reference.MOD_ID + ":" + (this.getUnlocalizedName().substring(5)));
 	}
 	
-	@Override
-	public void onBlockAdded(World par1World, int x, int y, int z){
-		
+	public void onBlockDestroyedByPlayer(World par1World, int x, int y, int z, int metadata){
+		par1World.removeBlockTileEntity(x, y, z);
 	}
+	
 	
 	@Override
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase player, ItemStack par6ItemStack){
@@ -43,9 +41,8 @@ public class SecurityBlock extends BlockContainer {
 	
 	@Override
     public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9){
-		//TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
-		//player.addChatMessage("Owner: " + tile.getOwner());
-		
+//		TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
+//		player.addChatMessage("Owner: " + tile.getOwner());
 		return false;
 	}
 	
@@ -53,12 +50,11 @@ public class SecurityBlock extends BlockContainer {
 	@Override
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer player){
 		TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
-
-		
-		if (player.getEntityName() == tile.getOwner()){
+		if (player.getEntityName().equals(player.getEntityName())){
 			if (player.getHeldItem() != null && player.getHeldItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 				this.dropBlockAsItem(par1World, x, y, z, par1World.getBlockMetadata(x, y, z), 0);
 				par1World.setBlockToAir(x, y, z);
+				par1World.removeBlockTileEntity(x, y, z);
 			}
 		}
 	}
