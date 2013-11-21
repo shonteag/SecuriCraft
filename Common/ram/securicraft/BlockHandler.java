@@ -4,7 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
-import ram.securicraft.blocks.*;
+import ram.securicraft.blocks.BioPanel;
+import ram.securicraft.blocks.SecurityBlock;
+import ram.securicraft.blocks.SecurityGlass;
+import ram.securicraft.blocks.SecurityLight;
+import ram.securicraft.blocks.ServerBlock;
+import ram.securicraft.blocks.ServerControlBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -13,6 +18,9 @@ public class BlockHandler {
 	public static Block securityLight;
 	public static Block bioPanel;
 	public static Block securityGlass;
+	
+	public static Block serverBlock;
+	public static Block serverControlBlock;
 	
 	public static void configureBlocks(Configuration config){
 		securityBlock = new SecurityBlock(config.get("blocks", "SC_secBlock", 2500).getInt(),Material.rock)
@@ -27,11 +35,16 @@ public class BlockHandler {
 			.setUnlocalizedName("securityGlass")
 			.setCreativeTab(CreativeTabs.tabBlock);
 		
-		bioPanel = new BioPanel(config.get("blocks", "SC_bioPanel", 2498).getInt(),Material.rock)
-			.setUnlocalizedName("securityBioPanel")
+//		bioPanel = new BioPanel(config.get("blocks", "SC_bioPanel", 2498).getInt(),Material.rock)
+//			.setUnlocalizedName("securityBioPanel")
+//			.setCreativeTab(CreativeTabs.tabRedstone);
+		
+		serverBlock = new ServerBlock(config.get("blocks", "SC_serverBlock", 2497).getInt(),Material.circuits)
+			.setUnlocalizedName("serverBlock")
 			.setCreativeTab(CreativeTabs.tabRedstone);
-		
-		
+		serverControlBlock = new ServerControlBlock(config.get("blocks", "SC_sercerControlBlock", 2495).getInt(),Material.circuits)
+			.setUnlocalizedName("serverControlBlock")
+			.setCreativeTab(CreativeTabs.tabRedstone);
 		
 	}
 	
@@ -39,13 +52,19 @@ public class BlockHandler {
 		registry.registerBlock(securityBlock, "securityBlock");
 		registry.registerBlock(securityLight, "securityLight");
 		registry.registerBlock(securityGlass, "securityGlass");
-		registry.registerBlock(bioPanel, "securityBioPanel");
+//		registry.registerBlock(bioPanel, "securityBioPanel");
+		
+		registry.registerBlock(serverBlock, "serverBlock");
+		registry.registerBlock(serverControlBlock, "serverControlBlock");
 	}
 	
 	public static void setNames(LanguageRegistry registry){
 		registry.addName(securityBlock, "Security Building Block");
 		registry.addName(securityLight, "Security Light");
 		registry.addName(securityGlass, "Security Glass");
-		registry.addName(bioPanel, "Biometric Access Panel");
+//		registry.addName(bioPanel, "Biometric Access Panel");
+		
+		registry.addName(serverBlock, "Server Block");
+		registry.addName(serverControlBlock, "Server Control");
 	}
 }

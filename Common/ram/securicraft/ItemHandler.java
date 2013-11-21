@@ -17,19 +17,19 @@ public class ItemHandler {
 			.setUnlocalizedName("securityTwiddler")
 			.setCreativeTab(CreativeTabs.tabTools);
 		
-		accessCard = new AccessCard(config.get("items", "SC_accessCard", 3001).getInt())
-			.setUnlocalizedName("securityTwiddler")
-			.setCreativeTab(CreativeTabs.tabTools);
+		//accessCard = new AccessCard(config.get("items", "SC_accessCard", 3001).getInt())
+		//	.setUnlocalizedName("securityTwiddler")
+		//	.setCreativeTab(CreativeTabs.tabTools);
 	}
 	
 	public static void registerItems(GameRegistry registry){
 		registry.registerItem(securityTwiddler, "securityTwiddler");
-		registry.registerItem(accessCard, "accessCard");
+		//registry.registerItem(accessCard, "accessCard");
 	}
 	
 	public static void setNames(LanguageRegistry registry){
 		registry.addName(securityTwiddler, "Security Twiddler");
-		registry.addName(accessCard, "Access Card");
+		//registry.addName(accessCard, "Access Card");
 	}
 	
 }

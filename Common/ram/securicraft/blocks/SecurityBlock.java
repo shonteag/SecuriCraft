@@ -50,7 +50,7 @@ public class SecurityBlock extends BlockContainer {
 	@Override
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer player){
 		TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
-		if (player.getEntityName().equals(player.getEntityName())){
+		if (player.getEntityName().equals(tile.getOwner())){
 			if (player.getHeldItem() != null && player.getHeldItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 				this.dropBlockAsItem(par1World, x, y, z, par1World.getBlockMetadata(x, y, z), 0);
 				par1World.setBlockToAir(x, y, z);
