@@ -6,26 +6,33 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntitySecurityBlock extends TileEntity {
-	public String owner;
+public class TileEntityCardPanel extends TileEntity {
+	public String owner = "";
+	public int subnetID = 0;
+	public String subnetName = "";
+	public boolean unlocked = false;
+	
+	public TileEntityCardPanel(){
+		super();
+		this.subnetID = 0; 
+		this.subnetName = "Subnet";
+	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound par1){
 		par1.setString("owner", this.owner);
+		par1.setInteger("subnetID", this.subnetID);
+		par1.setString("subnetName", this.subnetName);
+		par1.setBoolean("unlocked", this.unlocked);
 		super.writeToNBT(par1);
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound par1){
 		this.owner = par1.getString("owner");
+		this.subnetID = par1.getInteger("subnetID");
+		this.subnetName = par1.getString("subnetName");
+		this.unlocked = par1.getBoolean("unlocked");
 		super.readFromNBT(par1);
-	}
-	
-	public void setOwner (String par1Owner){
-		this.owner = par1Owner;
-	}
-	
-	public String getOwner() {
-		return this.owner;
 	}
 	
 	@Override

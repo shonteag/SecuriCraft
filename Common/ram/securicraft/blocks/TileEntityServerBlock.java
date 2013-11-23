@@ -9,7 +9,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityServerBlock extends TileEntity {
-	public int subnetID;
+	public int subnetID = 0;
 	
 	@Override
 	public void writeToNBT(NBTTagCompound par1){

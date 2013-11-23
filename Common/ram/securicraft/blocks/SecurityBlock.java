@@ -32,6 +32,10 @@ public class SecurityBlock extends BlockContainer {
 		par1World.removeBlockTileEntity(x, y, z);
 	}
 	
+	@Override
+    public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6){
+		par1World.removeBlockTileEntity(par2,par3,par4);
+	}
 	
 	@Override
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase player, ItemStack par6ItemStack){

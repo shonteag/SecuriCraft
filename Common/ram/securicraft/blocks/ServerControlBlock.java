@@ -9,30 +9,34 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import ram.securicraft.BlockHandler;
 import ram.securicraft.Reference;
+import ram.securicraft.SecuriCraft;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ServerControlBlock extends BlockContainer {
-	public static final int MAX_X = 3;
-	public static final int MAX_Y = 3;
-	public static final int MAX_Z = 3;
-	public static final int MIN_X = -3;
-	public static final int MIN_Y = -3;
-	public static final int MIN_Z = -3;
+	public static final int MAX_X = 4;
+	public static final int MAX_Y = 4;
+	public static final int MAX_Z = 4;
+	public static final int MIN_X = -4;
+	public static final int MIN_Y = -4;
+	public static final int MIN_Z = -4;
 	public static final int MINSIZE = 1;
+	
+	//temporary
+	private int subnetID;
 	
 	public ServerControlBlock(int id, Material material) {
 		super(id, material);
 	}
 	
 	//TODO: Interacts with player and brings up GUI
-	//TODO: Creates file on server with locations of linked panels
-	//TODO: Checks for multiblock structure in vicinity
+	//COMPLETE: Finds blocks in specified radius, and binds serverBlocks to its subnetID
 	
 	
 	@SideOnly(Side.CLIENT)
@@ -71,6 +75,11 @@ public class ServerControlBlock extends BlockContainer {
 		else front = 3;
 		
         par1World.setBlockMetadataWithNotify(x, y, z, front, 2);
+        
+		//Generate new SubnetID!!
+		int id = (int) Math.abs(x)+ (int) Math.abs(x) + (int) Math.abs(x)+ (int)(Math.random()*5001);
+		TileEntityServerControl controlTile = (TileEntityServerControl) par1World.getBlockTileEntity(x,y,z);
+		controlTile.subnetID = id;
    	}
 	
 	@Override
@@ -78,6 +87,7 @@ public class ServerControlBlock extends BlockContainer {
 		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, 0);
 		return par9;
 	}
+	
 	
 	@Override
 	public boolean canRenderInPass(int par1){
@@ -96,7 +106,25 @@ public class ServerControlBlock extends BlockContainer {
 	
 	@Override
     public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6){
+		TileEntityServerControl controlTile = (TileEntityServerControl) par1World.getBlockTileEntity(par2,par3,par4);
+
         par1World.removeBlockTileEntity(par2, par3, par4);
+        //reset all serverBlock subnetID fields to 0
+		for (int i=this.MIN_X;i<=this.MAX_X;i++) {
+			for (int j=this.MIN_Y;j<=this.MAX_Y;j++){
+				for (int k=this.MIN_Z;k<=this.MAX_Z;k++){
+					int tempID = par1World.getBlockId(par2+i, par3+j, par4+k);
+					if (tempID == BlockHandler.serverBlock.blockID){
+						TileEntityServerBlock tile = (TileEntityServerBlock) par1World.getBlockTileEntity(par2+i,par3+j,par4+k);
+						if (tile.subnetID == controlTile.subnetID) {
+							//serverBlock linked to this subnet
+							tile.subnetID = 0;
+						}
+					}
+				}
+			}
+		}
+		par1World.removeBlockTileEntity(par2,par3,par4);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -109,31 +137,117 @@ public class ServerControlBlock extends BlockContainer {
 	@Override
     public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9){
 		TileEntityServerControl tile = (TileEntityServerControl) par1World.getBlockTileEntity(x,y,z);
-		//player.addChatMessage("Server size: " + tile.numServerBlocks);
+
+		if ((player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.securityTwiddler"))){
+			
+//			//TODO: LINK PANELS: READ LINK FROM SECURITYTWIDDLER
+			if (player.isSneaking()){
+
+			} else {
+				
+				//add loc info to twiddler
+				ItemStack itemStack = player.inventory.getCurrentItem();
+				
+				int[] loc = new int[5];
+				loc[0]=1;
+				loc[1]=tile.subnetID;
+				loc[2]=x;
+				loc[3]=y;
+				loc[4]=z;
+				
+				itemStack.stackTagCompound.setIntArray("linkInfo", loc);
+				itemStack.stackTagCompound.setBoolean("linking", true);
+				
+				if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.BLUE + "Link initiated...");
+			}
+		
+		} else if (player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.accessCard")) {
+			//Add subnet to access card
+			ItemStack itemStack = player.inventory.getCurrentItem();
+			int[] subs = itemStack.stackTagCompound.getIntArray("subnetIDs");
+			String subsName = itemStack.stackTagCompound.getString("subnetNames");
+			
+			if (itemStack.stackTagCompound.getInteger("currentInd") >= 15) {
+				if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.RED + "Error: Cannot add more than 15 subnets to one access card!");
+			} else {
+				
+				boolean isPresent = false;
+				for (int k = 0; k<subs.length; k++) { 
+					if (subs[k] == tile.subnetID) {
+						isPresent = true;
+						break;
+					}
+				}
+				
+				if (!isPresent) {
+					//SUBNET IDS
+					itemStack.stackTagCompound.setInteger("currentInd", itemStack.stackTagCompound.getInteger("currentInd")+1);
+					itemStack.stackTagCompound.setIntArray("subnetIDs", subs);
+					subs[itemStack.stackTagCompound.getInteger("currentInd")] = tile.subnetID;
+
+					//SUBNET NAMES
+					subsName += EnumChatFormatting.GREEN + tile.subnetName + ",";
+					itemStack.stackTagCompound.setString("subnetNames", subsName);
+					
+					if(!par1World.isRemote) player.addChatMessage(EnumChatFormatting.GREEN + "Subnet Access added to ID Card.");
+				} else {
+					if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.RED + "Subnet Access already granted to this ID Card.");
+				}
+			}
+		
+		} else {
+			//TODO: PULL UP GUI
+			player.openGui(SecuriCraft.instance, 0, par1World, x, y, z);
+			
+			//just info
+			if (!par1World.isRemote) player.addChatMessage("Server size: " + tile.numServerBlocks 
+					+ ", SubnetID = " + EnumChatFormatting.BLUE + tile.subnetID 
+					+ EnumChatFormatting.WHITE + ", Subnet Name: " + EnumChatFormatting.BLUE + tile.subnetName);
+		}
 		return true;
 	}
 
 	@Override
     public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
 		//check multiblock structure
+		TileEntityServerControl controlTile = (TileEntityServerControl) par1World.getBlockTileEntity(par2,par3,par4);
 		int numBlocks = 0;
 		
 		for (int i=this.MIN_X;i<=this.MAX_X;i++) {
 			for (int j=this.MIN_Y;j<=this.MAX_Y;j++){
 				for (int k=this.MIN_Z;k<=this.MAX_Z;k++){
 					int tempID = par1World.getBlockId(par2+i, par3+j, par4+k);
-					if (tempID == BlockHandler.serverBlock.blockID) numBlocks++;
+					if (tempID == BlockHandler.serverBlock.blockID){
+						TileEntityServerBlock tile = (TileEntityServerBlock) par1World.getBlockTileEntity(par2+i,par3+j,par4+k);
+						if (tile.subnetID == 0){
+							//Set serverBlock tile entity subnet ID
+							tile.subnetID = controlTile.subnetID;
+							numBlocks++;
+						} else if (tile.subnetID == controlTile.subnetID) {
+							//serverBlock linked to correct subnet
+							numBlocks++;
+						} else {
+							//serverBlock belongs to another subnet. ignore that sh*t.
+						}
+					}
 				}
 			}
 		}
 		
-		TileEntityServerControl tile = (TileEntityServerControl) par1World.getBlockTileEntity(par2,par3,par4);
-		tile.numServerBlocks = numBlocks;
+		controlTile.numServerBlocks = numBlocks;
 		
 		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, 5);
 
 	}
+	
+	
+	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer player){
+		TileEntityServerControl controlTile = (TileEntityServerControl) par1World.getBlockTileEntity(x,y,z);
 
+		if(player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.securityTwiddler") && player.isSneaking()) {
+
+		}
+	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World world) {

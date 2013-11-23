@@ -3,8 +3,9 @@ package ram.securicraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.Configuration;
-import ram.securicraft.blocks.BioPanel;
+import ram.securicraft.blocks.CardReaderPanel;
 import ram.securicraft.blocks.SecurityBlock;
 import ram.securicraft.blocks.SecurityGlass;
 import ram.securicraft.blocks.SecurityLight;
@@ -16,11 +17,13 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class BlockHandler {
 	public static Block securityBlock;
 	public static Block securityLight;
-	public static Block bioPanel;
+//	public static Block bioPanel;
 	public static Block securityGlass;
 	
 	public static Block serverBlock;
 	public static Block serverControlBlock;
+	
+	public static Block cardReaderPanel;
 	
 	public static void configureBlocks(Configuration config){
 		securityBlock = new SecurityBlock(config.get("blocks", "SC_secBlock", 2500).getInt(),Material.rock)
@@ -46,6 +49,11 @@ public class BlockHandler {
 			.setUnlocalizedName("serverControlBlock")
 			.setCreativeTab(CreativeTabs.tabRedstone);
 		
+		
+		cardReaderPanel = new CardReaderPanel(config.get("blocks", "SC_cardReaderPanel", 2494).getInt(),Material.circuits)
+			.setUnlocalizedName("cardReaderPanel")
+			.setCreativeTab(CreativeTabs.tabRedstone);
+		
 	}
 	
 	public static void registerBlocks(GameRegistry registry){
@@ -55,7 +63,11 @@ public class BlockHandler {
 //		registry.registerBlock(bioPanel, "securityBioPanel");
 		
 		registry.registerBlock(serverBlock, "serverBlock");
-		registry.registerBlock(serverControlBlock, "serverControlBlock");
+		registry.registerBlock(serverControlBlock, ItemBlock.class,"serverControlBlock");
+		
+		registry.registerBlock(cardReaderPanel, "cardReaderPanel");
+		//----------RECIPES---------------
+
 	}
 	
 	public static void setNames(LanguageRegistry registry){
@@ -66,5 +78,7 @@ public class BlockHandler {
 		
 		registry.addName(serverBlock, "Server Block");
 		registry.addName(serverControlBlock, "Server Control");
+		
+		registry.addName(cardReaderPanel, "Card Reader Access Panel");
 	}
 }

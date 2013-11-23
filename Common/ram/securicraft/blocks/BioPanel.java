@@ -1,7 +1,5 @@
 package ram.securicraft.blocks;
 
-import ram.securicraft.Reference;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -9,8 +7,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import ram.securicraft.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -45,17 +44,11 @@ public class BioPanel extends BlockContainer {
 					player.addChatMessage("BioPanel: Access Denied");
 				}
 			}
+			
 		} else if (player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 			if (player.getEntityName().equals(tile.getOwner())) {
-				//GUI. FUCK YEA!
 				
-				if (tile.isOpen()) {
-					tile.setOpen(false);
-					player.addChatMessage("BioPanel: Panel is no longer acception new users.");
-				} else {
-					tile.setOpen(true);
-					player.addChatMessage("BioPanel: Panel is awaiting new user...");
-				}
+
 				
 			}
 		}

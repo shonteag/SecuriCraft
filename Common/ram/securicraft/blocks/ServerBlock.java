@@ -4,6 +4,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -52,6 +53,19 @@ public class ServerBlock extends BlockContainer {
 		
         par1World.setBlockMetadataWithNotify(x, y, z, front, 2);
 	}
+	
+	@Override
+    public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6){
+		par1World.removeBlockTileEntity(par2,par3,par4);
+	}
+	
+	
+	public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9){
+//		TileEntityServerBlock tile = (TileEntityServerBlock) par1World.getBlockTileEntity(x,y,z);
+//		player.addChatMessage("SubnetID = " + tile.subnetID);
+		return false;
+	}
+	
 	
 	@SideOnly(Side.CLIENT)
 	@Override

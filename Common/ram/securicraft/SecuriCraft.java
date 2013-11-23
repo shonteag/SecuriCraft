@@ -44,6 +44,7 @@ public class SecuriCraft {
 		GameRegistry.registerTileEntity(ram.securicraft.blocks.TileEntitySecurityPanel.class, "te_BP");
 		GameRegistry.registerTileEntity(ram.securicraft.blocks.TileEntityServerControl.class, "te_SCB");
 		GameRegistry.registerTileEntity(ram.securicraft.blocks.TileEntityServerBlock.class, "te_SerB");
+		GameRegistry.registerTileEntity(ram.securicraft.blocks.TileEntityCardPanel.class, "te_CrdPnl");
 	}
 	
 	@EventHandler
