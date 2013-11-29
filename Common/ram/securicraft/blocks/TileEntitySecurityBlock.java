@@ -7,7 +7,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntitySecurityBlock extends TileEntity {
-	public String owner;
+	public String owner = " ";
 	
 	@Override
 	public void writeToNBT(NBTTagCompound par1){

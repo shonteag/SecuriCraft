@@ -100,9 +100,9 @@ public class CardReaderPanel extends BlockContainer {
 			return true;
 			
 		} else if (player.inventory.getCurrentItem() != null
-						&& player.inventory.getCurrentItem().getItem().getUnlocalizedName().equals("item.securityTwiddler")
-						&& player.inventory.getCurrentItem().stackTagCompound.getBoolean("linking")
-						&& panelTile.owner.equals(player.username)) {
+						&& player.inventory.getCurrentItem().getItem().getUnlocalizedName().equals("item.securityTwiddler") /* If used item is the twiddler */
+						&& player.inventory.getCurrentItem().stackTagCompound.getBoolean("linking") /* If twiddler is in linking mode */
+						&& panelTile.owner.equals(player.username)) /* Link ONLY BY PANEL OWNER */ {
 		//------------------SERVER LINKER-------------------------------------------------------------------
 			int[] loc = player.inventory.getCurrentItem().stackTagCompound.getIntArray("linkInfo");			
 			if (loc[0] == 1) {
@@ -120,7 +120,7 @@ public class CardReaderPanel extends BlockContainer {
 			}
 			return true;
 			
-		} else if (panelTile.owner.equals(player.username)) {
+		} else if (panelTile.owner.equals(player.username)) /* If item used is NOT twiddler or accessCard, and user is owner */ {
 		//-----------------OWNER GET INFO---------------------------------------------------------------------
 			if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.BLUE + "Card Reader -> Subnet: " + EnumChatFormatting.WHITE + panelTile.subnetID + ", " + panelTile.subnetName);
 			return true;

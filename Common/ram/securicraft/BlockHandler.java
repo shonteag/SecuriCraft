@@ -7,6 +7,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.Configuration;
 import ram.securicraft.blocks.CardReaderPanel;
 import ram.securicraft.blocks.SecurityBlock;
+import ram.securicraft.blocks.SecurityDoor;
 import ram.securicraft.blocks.SecurityGlass;
 import ram.securicraft.blocks.SecurityLight;
 import ram.securicraft.blocks.ServerBlock;
@@ -24,6 +25,7 @@ public class BlockHandler {
 	public static Block serverControlBlock;
 	
 	public static Block cardReaderPanel;
+	public static Block securityDoor;
 	
 	public static void configureBlocks(Configuration config){
 		securityBlock = new SecurityBlock(config.get("blocks", "SC_secBlock", 2500).getInt(),Material.rock)
@@ -54,6 +56,10 @@ public class BlockHandler {
 			.setUnlocalizedName("cardReaderPanel")
 			.setCreativeTab(CreativeTabs.tabRedstone);
 		
+		securityDoor = new SecurityDoor(config.get("blocks", "SC_securityDoor", 2490).getInt(), Material.iron)
+			.setUnlocalizedName("securityDoor")
+			.setCreativeTab(CreativeTabs.tabBlock);
+		
 	}
 	
 	public static void registerBlocks(GameRegistry registry){
@@ -66,6 +72,7 @@ public class BlockHandler {
 		registry.registerBlock(serverControlBlock, ItemBlock.class,"serverControlBlock");
 		
 		registry.registerBlock(cardReaderPanel, "cardReaderPanel");
+		registry.registerBlock(securityDoor, "securityDoor");
 		//----------RECIPES---------------
 
 	}
@@ -80,5 +87,6 @@ public class BlockHandler {
 		registry.addName(serverControlBlock, "Server Control");
 		
 		registry.addName(cardReaderPanel, "Card Reader Access Panel");
+		registry.addName(securityDoor, "Security Door");
 	}
 }

@@ -46,15 +46,19 @@ public class TileEntityServerControl extends TileEntity {
 	}
 	
 	
-	@SideOnly(Side.CLIENT)
 	@Override
 	public Packet getDescriptionPacket() {
+        Packet132TileEntityData packet = new Packet132TileEntityData();
+        packet.actionType = 0;
+        packet.xPosition = xCoord;
+        packet.yPosition = yCoord;
+        packet.zPosition = zCoord;
 	    NBTTagCompound tagCompound = new NBTTagCompound();
 	    this.writeToNBT(tagCompound);
-	    return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, tagCompound);
+        packet.data = tagCompound;
+	    return packet;
 	}
 	
-	@SideOnly(Side.CLIENT)
 	@Override
 	public void onDataPacket(INetworkManager networkManager, Packet132TileEntityData packet) {
 	    this.readFromNBT(packet.data);

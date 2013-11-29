@@ -11,6 +11,7 @@ public class TileEntityCardPanel extends TileEntity {
 	public int subnetID = 0;
 	public String subnetName = "";
 	public boolean unlocked = false;
+	public int[] doors = new int[30];
 	
 	public TileEntityCardPanel(){
 		super();
