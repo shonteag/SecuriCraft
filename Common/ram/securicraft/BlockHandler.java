@@ -7,6 +7,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.Configuration;
 import ram.securicraft.blocks.CardReaderPanel;
 import ram.securicraft.blocks.SecurityBlock;
+import ram.securicraft.blocks.SecurityCautionBlock;
 import ram.securicraft.blocks.SecurityDoor;
 import ram.securicraft.blocks.SecurityGlass;
 import ram.securicraft.blocks.SecurityLight;
@@ -17,6 +18,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class BlockHandler {
 	public static Block securityBlock;
+	public static Block securityCautionBlock;
 	public static Block securityLight;
 //	public static Block bioPanel;
 	public static Block securityGlass;
@@ -30,6 +32,10 @@ public class BlockHandler {
 	public static void configureBlocks(Configuration config){
 		securityBlock = new SecurityBlock(config.get("blocks", "SC_secBlock", 2500).getInt(),Material.rock)
 			.setUnlocalizedName("securityBlock")
+			.setCreativeTab(CreativeTabs.tabBlock);
+		
+		securityCautionBlock = new SecurityCautionBlock(config.get("blocks", "SC_secCautBlock", 2501).getInt(),Material.glass)
+			.setUnlocalizedName("securityCautionBlock")
 			.setCreativeTab(CreativeTabs.tabBlock);
 		
 		securityLight = new SecurityLight(config.get("blocks", "SC_secLight", 2499).getInt(),Material.rock)
@@ -64,6 +70,7 @@ public class BlockHandler {
 	
 	public static void registerBlocks(GameRegistry registry){
 		registry.registerBlock(securityBlock, "securityBlock");
+		registry.registerBlock(securityCautionBlock, "securityCautionBlock");
 		registry.registerBlock(securityLight, "securityLight");
 		registry.registerBlock(securityGlass, "securityGlass");
 //		registry.registerBlock(bioPanel, "securityBioPanel");
@@ -79,6 +86,7 @@ public class BlockHandler {
 	
 	public static void setNames(LanguageRegistry registry){
 		registry.addName(securityBlock, "Security Building Block");
+		registry.addName(securityCautionBlock, "Security Anti-Tampering Block");
 		registry.addName(securityLight, "Security Light");
 		registry.addName(securityGlass, "Security Glass");
 //		registry.addName(bioPanel, "Biometric Access Panel");

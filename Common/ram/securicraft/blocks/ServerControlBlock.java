@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
@@ -140,7 +141,6 @@ public class ServerControlBlock extends BlockContainer {
 
 		if ((player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.securityTwiddler"))){
 			
-//			//TODO: LINK PANELS: READ LINK FROM SECURITYTWIDDLER
 			if (player.isSneaking()){
 
 			} else {
@@ -155,6 +155,11 @@ public class ServerControlBlock extends BlockContainer {
 				loc[3]=y;
 				loc[4]=z;
 				
+				if (itemStack.stackTagCompound == null) {
+					itemStack.stackTagCompound = new NBTTagCompound();
+					itemStack.stackTagCompound.setBoolean("linking", false);
+				}
+				
 				itemStack.stackTagCompound.setIntArray("linkInfo", loc);
 				itemStack.stackTagCompound.setBoolean("linking", true);
 				
@@ -164,6 +169,14 @@ public class ServerControlBlock extends BlockContainer {
 		} else if (player.getHeldItem() != null && player.getHeldItem().getItem().getUnlocalizedName().equals("item.accessCard")) {
 			//Add subnet to access card
 			ItemStack itemStack = player.inventory.getCurrentItem();
+			
+			if (itemStack.stackTagCompound == null) {
+				itemStack.stackTagCompound = new NBTTagCompound();
+			    itemStack.stackTagCompound.setIntArray("subnetIDs", new int[16]);
+			    itemStack.stackTagCompound.setInteger("currentInd",0);
+			    itemStack.stackTagCompound.setString("subnetNames", EnumChatFormatting.BLUE + "Subnets: ");
+			}
+			
 			int[] subs = itemStack.stackTagCompound.getIntArray("subnetIDs");
 			String subsName = itemStack.stackTagCompound.getString("subnetNames");
 			

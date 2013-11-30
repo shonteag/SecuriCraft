@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
@@ -25,12 +26,36 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CardReaderPanel extends BlockContainer {
 	private int tickNumber;
+	private int power = 0;
 	
 	public CardReaderPanel(int id, Material material) {
 		super(id, material);
 		this.setBlockUnbreakable();
-		this.setTickNumber(20);
+		this.setTickNumber(40);
 	}
+	
+	@Override
+	public boolean canProvidePower(){
+		return true;
+	}
+	
+	@Override
+    public int isProvidingWeakPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+        return power;
+    }
+	
+	public int isProvidingStrongPower(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+	{
+		return power;
+	}
+
+	
+	@Override
+    public boolean canConnectRedstone(IBlockAccess iba, int i, int j, int k, int dir)
+    {
+    	return true;
+    }
 	
 	public void setTickNumber(int num){
 		this.tickNumber = num;
@@ -62,6 +87,15 @@ public class CardReaderPanel extends BlockContainer {
 		if (panelTile != null) {
 		//switch back to locked
 			if (panelTile.unlocked) panelTile.unlocked = false;
+			this.power = 0;
+			
+            par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
+            par1World.notifyBlocksOfNeighborChange(par2, par3 + 1, par4, this.blockID);
+            par1World.notifyBlocksOfNeighborChange(par2 - 1, par3, par4, this.blockID);
+            par1World.notifyBlocksOfNeighborChange(par2 + 1, par3, par4, this.blockID);
+            par1World.notifyBlocksOfNeighborChange(par2, par3, par4 - 1, this.blockID);
+            par1World.notifyBlocksOfNeighborChange(par2, par3, par4 + 1, this.blockID);
+			
 		}
     }
 	
@@ -77,6 +111,15 @@ public class CardReaderPanel extends BlockContainer {
 		
 		if (player.inventory.getCurrentItem() != null && player.inventory.getCurrentItem().getItem().getUnlocalizedName().equals("item.accessCard")) {
 		//------------------ACCESS CARD--------------------------------------------------------------------
+			//check for creative spawn
+			if (player.inventory.getCurrentItem().stackTagCompound == null) {
+				ItemStack itemStack = player.inventory.getCurrentItem();
+			    itemStack.stackTagCompound = new NBTTagCompound();
+			    itemStack.stackTagCompound.setIntArray("subnetIDs", new int[16]);
+			    itemStack.stackTagCompound.setInteger("currentInd",0);
+			    itemStack.stackTagCompound.setString("subnetNames", EnumChatFormatting.BLUE + "Subnets: ");
+			}
+			
 			int[] subs = player.inventory.getCurrentItem().stackTagCompound.getIntArray("subnetIDs");
 			
 			boolean found = false;
@@ -89,6 +132,15 @@ public class CardReaderPanel extends BlockContainer {
 			if (found) {
 				//access granted
 				panelTile.unlocked = true;
+				this.power = 15;
+				
+	            par1World.notifyBlocksOfNeighborChange(x, y - 1, z, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(x, y + 1, z, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(x - 1, y, z, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(x + 1, y, z, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(x, y, z - 1, this.blockID);
+	            par1World.notifyBlocksOfNeighborChange(x, y, z + 1, this.blockID);
+				
 				par1World.scheduleBlockUpdate(x, y, z, this.blockID, this.tickNumber);
 				
 				if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.GREEN + "Access granted via subnet " + EnumChatFormatting.BLUE + panelTile.subnetID);

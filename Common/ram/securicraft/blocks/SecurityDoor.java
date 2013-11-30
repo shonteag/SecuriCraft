@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -46,12 +47,12 @@ public class SecurityDoor extends BlockContainer {
 	
 	@Override
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer player){
-		TileEntitySecurityBlock tile = (TileEntitySecurityBlock) par1World.getBlockTileEntity(x, y, z);
+		TileEntitySecurityDoor tile = (TileEntitySecurityDoor) par1World.getBlockTileEntity(x, y, z);
 		if (player.getEntityName().equals(tile.getOwner())){
 			if (player.getHeldItem() != null && player.getHeldItem().getUnlocalizedName().equals("item.securityTwiddler")) {
 				par1World.setBlockToAir(x, y, z);
 				par1World.removeBlockTileEntity(x, y, z);
-				
+				this.onBlockHarvested(par1World, x, y, z, 0, player);
 			}
 		}
 	}
@@ -309,13 +310,43 @@ public class SecurityDoor extends BlockContainer {
      */
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
+		TileEntitySecurityDoor tile = (TileEntitySecurityDoor) par1World.getBlockTileEntity(par2,par3,par4);
+    	if (par5EntityPlayer.getEntityName() == tile.owner)
+    	{
+    		if (!par1World.isRemote) par5EntityPlayer.addChatMessage(EnumChatFormatting.BLUE + "Panels: " + tile.getPanels());
+    	}
+    	
     	return false;
     }
 
     /**
      * A function to open a door.
      */
-    public void onPoweredBlockChange(World par1World, int par2, int par3, int par4, boolean par5) {}
+    public void onPoweredBlockChange(World par1World, int par2, int par3, int par4, boolean par5) {
+    	//-------------------------------------
+        int l = this.getFullMetadata(par1World, par2, par3, par4);
+        boolean flag1 = (l & 4) != 0;
+
+        if (flag1 != par5)
+        {
+            int i1 = l & 7;
+            i1 ^= 4;
+
+            if ((l & 8) == 0)
+            {
+                par1World.setBlockMetadataWithNotify(par2, par3, par4, i1, 2);
+                par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
+            }
+            else
+            {
+                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, i1, 2);
+                par1World.markBlockRangeForRenderUpdate(par2, par3 - 1, par4, par2, par3, par4);
+            }
+
+            par1World.playAuxSFXAtEntity((EntityPlayer)null, 1003, par2, par3, par4, 0);
+        }
+    	//-------------------------------------
+    }
 
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -439,7 +470,7 @@ public class SecurityDoor extends BlockContainer {
     
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		return new TileEntitySecurityBlock();
+		return new TileEntitySecurityDoor();
 	}
 	
 }
