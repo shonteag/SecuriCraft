@@ -32,6 +32,7 @@ public class CardReaderPanel extends BlockContainer {
 		super(id, material);
 		this.setBlockUnbreakable();
 		this.setTickNumber(40);
+		this.setResistance(2500);
 	}
 	
 	@Override
@@ -78,6 +79,7 @@ public class CardReaderPanel extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Icon getIcon(int par1, int par2) {
+		if (par2 > 4) return this.frontIconOn;
 		return this.frontIcon;
 	}
 	
@@ -86,8 +88,11 @@ public class CardReaderPanel extends BlockContainer {
 		TileEntityCardPanel panelTile = (TileEntityCardPanel) par1World.getBlockTileEntity(par2,par3,par4);
 		if (panelTile != null) {
 		//switch back to locked
-			if (panelTile.unlocked) panelTile.unlocked = false;
-			this.power = 0;
+			panelTile.unlocked = false;
+			if (this.power > 0) this.power = 0;
+			
+//            int meta = par1World.getBlockMetadata(par2, par3, par4);
+//            par1World.setBlockMetadataWithNotify(par2, par3, par4, 3, meta-4);
 			
             par1World.notifyBlocksOfNeighborChange(par2, par3 - 1, par4, this.blockID);
             par1World.notifyBlocksOfNeighborChange(par2, par3 + 1, par4, this.blockID);
@@ -95,7 +100,8 @@ public class CardReaderPanel extends BlockContainer {
             par1World.notifyBlocksOfNeighborChange(par2 + 1, par3, par4, this.blockID);
             par1World.notifyBlocksOfNeighborChange(par2, par3, par4 - 1, this.blockID);
             par1World.notifyBlocksOfNeighborChange(par2, par3, par4 + 1, this.blockID);
-			
+            
+            //par1World.markBlockForRenderUpdate(par2, par3, par4);
 		}
     }
 	
@@ -132,7 +138,10 @@ public class CardReaderPanel extends BlockContainer {
 			if (found) {
 				//access granted
 				panelTile.unlocked = true;
-				this.power = 15;
+				if (this.power < 15) this.power = 15;
+				
+//				int meta = par1World.getBlockMetadata(x, y, z);
+//				par1World.setBlockMetadataWithNotify(x, y, z, 3, meta+4);
 				
 	            par1World.notifyBlocksOfNeighborChange(x, y - 1, z, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(x, y + 1, z, this.blockID);
@@ -141,6 +150,7 @@ public class CardReaderPanel extends BlockContainer {
 	            par1World.notifyBlocksOfNeighborChange(x, y, z - 1, this.blockID);
 	            par1World.notifyBlocksOfNeighborChange(x, y, z + 1, this.blockID);
 				
+	            //par1World.markBlockForRenderUpdate(x, y, z);
 				par1World.scheduleBlockUpdate(x, y, z, this.blockID, this.tickNumber);
 				
 				if (!par1World.isRemote) player.addChatMessage(EnumChatFormatting.GREEN + "Access granted via subnet " + EnumChatFormatting.BLUE + panelTile.subnetID);
@@ -285,12 +295,18 @@ public class CardReaderPanel extends BlockContainer {
         return 1;
     }
     
+    //reduce metaData
+    private int reduceMeta(int meta){
+    	if (meta > 4) return meta-4;
+    	return meta;
+    }
+    
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
     public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
     {
-        int l = par1IBlockAccess.getBlockMetadata(par2, par3, par4);
+        int l = this.reduceMeta(par1IBlockAccess.getBlockMetadata(par2, par3, par4));
         this.func_82534_e(l);
     }
 

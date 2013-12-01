@@ -18,6 +18,7 @@ public class SecurityLight extends BlockContainer {
 		super(id, material);
 		this.setLightValue(1.0f);
 		this.setBlockUnbreakable();
+		this.setResistance(2500);
 	}
 	
 	@SideOnly(Side.CLIENT)

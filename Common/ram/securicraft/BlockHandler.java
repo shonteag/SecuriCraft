@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.Configuration;
 import ram.securicraft.blocks.CardReaderPanel;
+import ram.securicraft.blocks.CardReaderSwitch;
 import ram.securicraft.blocks.SecurityBlock;
 import ram.securicraft.blocks.SecurityCautionBlock;
 import ram.securicraft.blocks.SecurityDoor;
@@ -27,6 +28,7 @@ public class BlockHandler {
 	public static Block serverControlBlock;
 	
 	public static Block cardReaderPanel;
+	public static Block cardReaderSwitch;
 	public static Block securityDoor;
 	
 	public static void configureBlocks(Configuration config){
@@ -60,6 +62,10 @@ public class BlockHandler {
 		
 		cardReaderPanel = new CardReaderPanel(config.get("blocks", "SC_cardReaderPanel", 2494).getInt(),Material.circuits)
 			.setUnlocalizedName("cardReaderPanel")
+			.setCreativeTab(CreativeTabs.tabRedstone);
+		
+		cardReaderSwitch = new CardReaderSwitch(config.get("blocks", "SC_cardReaderSwitch", 2493).getInt(),Material.circuits)
+			.setUnlocalizedName("cardReaderSwitch")
 			.setCreativeTab(CreativeTabs.tabRedstone);
 		
 		securityDoor = new SecurityDoor(config.get("blocks", "SC_securityDoor", 2490).getInt(), Material.iron)
