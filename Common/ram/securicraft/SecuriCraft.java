@@ -1,5 +1,6 @@
 package ram.securicraft;
 
+import net.minecraft.world.gen.feature.WorldGenBigMushroom;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -50,7 +51,7 @@ public class SecuriCraft {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		
+		//WorldGenHandler.registerWorldGenerators(new GameRegistry());
 	}
 	
 	@EventHandler

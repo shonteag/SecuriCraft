@@ -8,15 +8,18 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntitySecurityBlock extends TileEntity {
 	public String owner = " ";
+	public boolean mobGuard = false;
 	
 	@Override
 	public void writeToNBT(NBTTagCompound par1){
 		par1.setString("owner", this.owner);
+		par1.setBoolean("mobGuard", this.mobGuard);
 		super.writeToNBT(par1);
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound par1){
 		this.owner = par1.getString("owner");
+		this.mobGuard = par1.getBoolean("mobGuard");
 		super.readFromNBT(par1);
 	}
 	

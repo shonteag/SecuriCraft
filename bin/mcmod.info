@@ -1,0 +1,19 @@
+[
+{
+"modid": "SecuriCraft",
+"name": "SecuriCraft",
+"description": "Adding security and access control systems to your minecraft bases!",
+"version": "1.0",
+"credits": "Created by RamilVenoard",
+"logoFile": "",
+"mcversion": "1.6.4",
+"url": "",
+"updateUrl": "",
+"authors": [ "autocpaint_bg", "RamilVenoard"],
+"parent":"",
+"screenshots": [],
+"dependencies": [
+"mod_MinecraftForge"
+]
+}
+]

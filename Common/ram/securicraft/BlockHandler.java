@@ -14,6 +14,8 @@ import ram.securicraft.blocks.SecurityGlass;
 import ram.securicraft.blocks.SecurityLight;
 import ram.securicraft.blocks.ServerBlock;
 import ram.securicraft.blocks.ServerControlBlock;
+import ram.securicraft.blocks.UtilBlock_AntiMob;
+import ram.securicraft.blocks.UtilBlock_TripWire;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -30,6 +32,9 @@ public class BlockHandler {
 	public static Block cardReaderPanel;
 	public static Block cardReaderSwitch;
 	public static Block securityDoor;
+	
+	public static Block utilMobGuard;
+	public static Block utilTripWire;
 	
 	public static void configureBlocks(Configuration config){
 		securityBlock = new SecurityBlock(config.get("blocks", "SC_secBlock", 2500).getInt(),Material.rock)
@@ -72,6 +77,15 @@ public class BlockHandler {
 			.setUnlocalizedName("securityDoor")
 			.setCreativeTab(CreativeTabs.tabBlock);
 		
+		
+		utilMobGuard = new UtilBlock_AntiMob(config.get("blocks", "SC_antiMob", 2487).getInt(), Material.rock)
+			.setUnlocalizedName("utilAntiMobBlock")
+			.setCreativeTab(CreativeTabs.tabRedstone);
+		
+		utilTripWire = new UtilBlock_TripWire(config.get("blocks", "SC_tripWire",2486).getInt(), Material.circuits)
+			.setUnlocalizedName("utilTripWireBlock")
+			.setCreativeTab(CreativeTabs.tabRedstone);
+		
 	}
 	
 	public static void registerBlocks(GameRegistry registry){
@@ -86,6 +100,9 @@ public class BlockHandler {
 		
 		registry.registerBlock(cardReaderPanel, "cardReaderPanel");
 		registry.registerBlock(securityDoor, "securityDoor");
+		
+		registry.registerBlock(utilMobGuard, "utilAntiMobBlock");
+		registry.registerBlock(utilTripWire, "utilTripWireBlock");
 		//----------RECIPES---------------
 
 	}
@@ -102,5 +119,8 @@ public class BlockHandler {
 		
 		registry.addName(cardReaderPanel, "Card Reader Access Panel");
 		registry.addName(securityDoor, "Security Door");
+		
+		registry.addName(utilMobGuard, "Watch Dog Block: Anti-Mob Spawn");
+		registry.addName(utilTripWire, "Watch Dog Block: Trip Wire Laser");
 	}
 }
